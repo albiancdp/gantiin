@@ -1,92 +1,80 @@
 # Folder Structure
 
+> Struktur aktual per Sprint 2.5 (19 Juli 2026).
+
 ```
-gantiin/
-├── .github/
-│   └── workflows/
-│       ├── ci.yml                    # CI pipeline
-│       └── deploy.yml                # Deploy to Vercel
-├── .ai/                              # AI framework (not deployed)
+convertkan/
+├── .ai/                              # AI workflow framework (not deployed)
 ├── docs/                             # Documentation (not deployed)
 ├── public/
-│   ├── favicon.ico                   # Favicon
-│   ├── og-image.png                  # OG image
-│   └── robots.txt                    # Robots file
+│   ├── pdfjs/standard_fonts/         # pdf.js fonts (generated postinstall, gitignored)
+│   └── favicon.ico
+├── scripts/
+│   └── copy-pdf-assets.mjs           # postinstall: copy pdf.js assets ke public/
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx                # Root layout
+│   │   ├── layout.tsx                # Root layout (fonts, ThemeProvider, Header/Footer, Toaster)
 │   │   ├── page.tsx                  # Landing page
-│   │   ├── globals.css               # Global styles
+│   │   ├── globals.css               # Tailwind v4 theme + brand tokens (CSS-first)
+│   │   ├── error.tsx                 # Global error boundary
+│   │   ├── sitemap.ts                # Generated sitemap.xml
+│   │   ├── robots.ts                 # Generated robots.txt
+│   │   ├── konversi/
+│   │   │   └── page.tsx              # Universal converter (semua tipe file)
 │   │   ├── pdf/
-│   │   │   └── page.tsx              # PDF converter page
+│   │   │   └── page.tsx              # PDF tools (allowedTypes: pdf)
 │   │   ├── image/
-│   │   │   └── page.tsx              # Image converter page
+│   │   │   └── page.tsx              # Image tools — Sprint 3 (ComingSoon)
 │   │   └── merge/
-│   │       └── page.tsx              # PDF merge page
+│   │       └── page.tsx              # PDF merge — Sprint 4 (ComingSoon)
 │   ├── components/
-│   │   ├── ui/                       # Shadcn/ui components
+│   │   ├── ui/                       # shadcn/ui (Base UI)
 │   │   │   ├── button.tsx
 │   │   │   ├── card.tsx
-│   │   │   ├── dialog.tsx
-│   │   │   ├── dropdown-menu.tsx
 │   │   │   ├── input.tsx
-│   │   │   ├── label.tsx
 │   │   │   ├── progress.tsx
-│   │   │   ├── select.tsx
-│   │   │   ├── slider.tsx
-│   │   │   ├── toast.tsx
-│   │   │   └── skeleton.tsx
+│   │   │   ├── sheet.tsx
+│   │   │   └── sonner.tsx
 │   │   ├── upload/
-│   │   │   ├── DropZone.tsx
-│   │   │   ├── FileInput.tsx
-│   │   │   └── FilePreview.tsx
+│   │   │   ├── DropZone.tsx          # Drag & drop + click-to-browse + keyboard
+│   │   │   └── FilePreview.tsx       # Preview (PDF thumbnail / image object URL)
 │   │   ├── convert/
-│   │   │   ├── ConvertButton.tsx
-│   │   │   ├── ConvertProgress.tsx
-│   │   │   └── ConvertResult.tsx
-│   │   ├── donation/
-│   │   │   ├── DonateButton.tsx
-│   │   │   └── DonateModal.tsx
-│   │   └── layout/
-│   │       ├── Header.tsx
-│   │       ├── Footer.tsx
-│   │       ├── ThemeToggle.tsx
-│   │       └── Container.tsx
+│   │   │   ├── UniversalConverter.tsx # Orchestrator: upload → opsi → konversi → hasil
+│   │   │   ├── ConversionOptions.tsx  # Grid "Bisa dikonversi ke:" (dari registry)
+│   │   │   ├── ConvertProgress.tsx    # Progress bar + status (aria-live)
+│   │   │   └── ConvertResult.tsx      # Hasil + download + copy + reset
+│   │   ├── landing/
+│   │   │   ├── Hero.tsx
+│   │   │   ├── Features.tsx
+│   │   │   ├── HowItWorks.tsx
+│   │   │   └── CtaSection.tsx
+│   │   ├── layout/
+│   │   │   ├── Header.tsx            # Sticky header + mobile Sheet menu
+│   │   │   ├── Footer.tsx            # Links + tombol donasi Saweria
+│   │   │   ├── ThemeToggle.tsx       # Sun/Moon (CSS-based, tanpa setState di effect)
+│   │   │   └── Container.tsx
+│   │   ├── ComingSoon.tsx            # Placeholder halaman belum rilis
+│   │   └── theme-provider.tsx        # next-themes wrapper
 │   ├── lib/
 │   │   ├── conversions/
-│   │   │   ├── index.ts              # Main entry
-│   │   │   ├── pdf.ts                # PDF conversion
-│   │   │   ├── image.ts              # Image conversion
-│   │   │   ├── engine.ts             # Conversion engine
-│   │   │   └── types.ts              # Conversion types
-│   │   ├── utils.ts                  # Utility functions
-│   │   ├── constants.ts              # Constants
-│   │   ├── validations.ts            # Zod schemas
-│   │   └── analytics.ts              # Analytics helper
-│   ├── hooks/
-│   │   ├── useFileUpload.ts          # File upload hook
-│   │   ├── useConversion.ts          # Conversion hook
-│   │   └── useTheme.ts               # Theme hook
-│   ├── store/
-│   │   ├── theme.ts                  # Theme store
-│   │   └── converter.ts              # Converter store
-│   └── types/
-│       ├── file.ts                   # File types
-│       └── conversion.ts             # Conversion types
-├── workers/
-│   ├── pdf.worker.ts                 # PDF Web Worker
-│   └── image.worker.ts               # Image Web Worker
-├── prisma/                           # Not used (no database)
-├── docker-compose.yml                # Not used (no server)
-├── Dockerfile                        # Not used (static)
-├── next.config.ts                    # Next.js config
-├── tailwind.config.ts                # Tailwind config
-├── tsconfig.json                     # TypeScript config
-├── package.json                      # Dependencies
-├── .env.example                      # Environment variables
-├── .gitignore                        # Git ignore
-├── README.md                         # Project readme
-└── LICENSE                           # MIT License
+│   │   │   ├── registry.ts           # SOURCE OF TRUTH: tipe file → opsi konversi
+│   │   │   ├── engine.ts             # convertFile() routing + progress
+│   │   │   ├── pdf.ts                # pdf.js lazy-load: extractTextFromPdf, renderPdfThumbnail
+│   │   │   └── types.ts              # ConversionType, ConversionResultData
+│   │   ├── validations.ts            # Magic bytes detection + size validation + formatFileSize
+│   │   ├── errors.ts                 # AppError + pesan error Bahasa Indonesia
+│   │   ├── download.ts               # downloadBlob (native <a download>) + replaceExtension
+│   │   ├── constants.ts              # siteConfig, MAX_FILE_SIZE, ACCEPT_* types
+│   │   └── utils.ts                  # cn()
+│   └── hooks/
+│       ├── useFileUpload.ts          # File selection + validasi
+│       └── useConversion.ts          # Status/progress/result/error konversi
+├── next.config.ts                    # output: 'export', images.unoptimized
+├── components.json                   # shadcn/ui config (style base-nova)
+├── package.json                      # postinstall → copy-pdf-assets.mjs
+├── tsconfig.json                     # TypeScript strict
+├── .gitignore                        # Termasuk /public/pdfjs (generated)
+└── README.md
 ```
 
 ## Key Files Description
@@ -94,26 +82,33 @@ gantiin/
 ### Configuration Files
 | File | Purpose |
 |------|---------|
-| `next.config.ts` | Next.js configuration (output: 'export' for static) |
-| `tailwind.config.ts` | Tailwind CSS configuration with custom theme |
-| `tsconfig.json` | TypeScript strict mode configuration |
-| `package.json` | Dependencies and scripts |
+| `next.config.ts` | Static export (`output: 'export'`) |
+| `src/app/globals.css` | Tailwind v4 CSS-first config + brand color tokens (tidak ada tailwind.config) |
+| `tsconfig.json` | TypeScript strict mode |
+| `components.json` | shadcn/ui config — style `base-nova` (Base UI, bukan Radix) |
 
 ### Source Files
 | Directory | Purpose |
 |-----------|---------|
-| `src/app/` | Next.js App Router pages |
-| `src/components/ui/` | Shadcn/ui base components |
+| `src/app/` | Next.js App Router pages (semua static) |
+| `src/components/ui/` | shadcn/ui base components |
 | `src/components/upload/` | File upload components |
-| `src/components/convert/` | Conversion UI components |
-| `src/lib/conversions/` | Core conversion logic |
+| `src/components/convert/` | Universal converter flow |
+| `src/components/landing/` | Landing page sections |
+| `src/lib/conversions/` | Core conversion logic + registry |
 | `src/hooks/` | Custom React hooks |
-| `src/store/` | Zustand stores |
-| `workers/` | Web Worker scripts |
 
-### Not Used
-| Directory | Reason |
-|-----------|--------|
-| `prisma/` | No database (client-side only) |
-| `docker-compose.yml` | No server to containerize |
-| `Dockerfile` | Static site, no server |
+### Belum Ada (Sprint Berikutnya)
+| Directory/File | Rencana |
+|----------------|---------|
+| `src/lib/conversions/image.ts` | Sprint 3 — Canvas image conversion |
+| `src/lib/analytics.ts` | Sprint 4 — Umami helper |
+| `src/store/` | Zustand stores (jika diperlukan; theme sudah via next-themes) |
+| `workers/` | Web Workers kustom (pdf.js punya worker internal sendiri) |
+
+### Tidak Dipakai
+| Item | Reason |
+|------|--------|
+| `prisma/`, `docker-compose.yml`, `Dockerfile` | No database, no server (static site) |
+| `tailwind.config.ts` | Tailwind v4 memakai CSS-first config |
+| `file-saver` | Diganti native `<a download>` |

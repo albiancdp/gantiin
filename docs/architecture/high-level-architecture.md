@@ -39,8 +39,8 @@ graph TB
 ## Key Decisions
 
 ### Why Next.js (Static Export)
-- **SEO:** Server-side rendering untuk landing page
-- **Performance:** Static generation untuk fast load
+- **SEO:** Static generation untuk landing page yang optimal
+- **Performance:** Static export untuk fast load
 - **Developer Experience:** Hot reload, TypeScript, great DX
 - **Deployment:** Zero-config deploy ke Vercel
 
@@ -82,15 +82,17 @@ sequenceDiagram
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| **UI Framework** | Next.js 14 (App Router) | React framework with SSR |
+| **UI Framework** | Next.js 16 (App Router) | React framework, static export |
 | **Language** | TypeScript | Type safety |
-| **Styling** | Tailwind CSS | Utility-first CSS |
+| **Styling** | Tailwind CSS v4 | Utility-first CSS |
 | **Components** | Shadcn/ui | UI component library |
 | **State** | Zustand | Global state management |
 | **Validation** | Zod | Schema validation |
-| **PDF** | pdf.js + pdf-lib | PDF processing |
-| **Image** | browser-image-compression | Image processing |
-| **Download** | file-saver | File download |
-| **Analytics** | Plausible | Privacy-friendly analytics |
+| **PDF Extract** | pdfjs-dist 6.x | Text extraction & rendering (lazy) |
+| **PDF Manipulation** | @cantoo/pdf-lib | Merge, split, create PDF (lazy) |
+| **HEIC** | heic-to | HEIC→JPG decoder WASM (lazy) |
+| **Image** | Canvas API + @jsquash/webp | Conversion & compression |
+| **Download** | Native `<a download>` | File download |
+| **Analytics** | Umami (self-hosted) | Privacy-friendly analytics |
 | **Hosting** | Vercel | Static hosting |
 | **Domain** | Custom (.com/.id) | Brand identity |

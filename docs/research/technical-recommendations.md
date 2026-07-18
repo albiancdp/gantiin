@@ -5,7 +5,7 @@
 ### Recommended Pattern: Static SPA with Client-Side Processing
 - **Why:** 
   - Tidak perlu server (zero cost)
-  - Privasi terjamin (file tidak离开 browser)
+  - Privasi terjamin (file tidak meninggalkan browser)
   - Deployment gratis di Vercel/Netlify/Cloudflare Pages
 - **Trade-off:**
   - Tidak ada server-side processing
@@ -50,10 +50,11 @@ gantiin/
 
 | Library | Purpose | Size | Why This |
 |---------|---------|------|----------|
-| **next** | Framework | - | React framework terbaik, SEO-friendly |
-| **react** | UI Library | - | Standard, ekosistem besar |
-| **tailwindcss** | Styling | ~3KB | Utility-first, minimal CSS |
+| **next** | Framework | - | Next.js 16, static export, SEO-friendly |
+| **react** | UI Library | - | React 19, ekosistem besar |
+| **tailwindcss** | Styling | ~3KB | Tailwind v4, utility-first, minimal CSS |
 | **@shadcn/ui** | Components | ~50KB | Beautiful, accessible, customizable |
+| **next-themes** | Dark mode | ~2KB | Theme management untuk Next.js |
 | **zustand** | State | ~1KB | Lightweight, simple API |
 | **zod** | Validation | ~12KB | Type-safe, integrasi dengan TypeScript |
 
@@ -61,11 +62,16 @@ gantiin/
 
 | Library | Purpose | Size | Why This |
 |---------|---------|------|----------|
-| **pdf.js** | PDF rendering | ~400KB | Standard untuk PDF di browser |
-| **pdf-lib** | PDF manipulation | ~200KB | Create/edit PDF di browser |
-| **browser-image-compression** | Image compression | ~50KB | Lightweight, bagus hasilnya |
-| **file-saver** | File download | ~5KB | Simple API untuk download |
-| **jszip** | ZIP creation | ~45KB | Untuk batch download |
+| **pdfjs-dist** | PDF rendering & text extract | ~400KB | Standard untuk PDF di browser (lazy-load + worker) |
+| **@cantoo/pdf-lib** | PDF merge/split/create | ~200KB | Fork pdf-lib yang aktif maintained (lazy-load) |
+| **heic-to** | HEIC/HEIF → JPG/PNG | ~1.5-2MB (WASM) | Decoder libheif, wajib lazy-load per fitur |
+| **@jsquash/webp** | WebP encode fallback | ~100KB (WASM) | Untuk browser tanpa WebP encoder (Safari) |
+| **jszip** | ZIP creation | ~45KB | Untuk batch download (lazy-load) |
+
+**Catatan:**
+- Konversi & kompres gambar menggunakan **Canvas API native** (tanpa library tambahan seperti browser-image-compression)
+- Download file menggunakan **`<a download>` native** (file-saver tidak diperlukan)
+- Semua library konversi **wajib lazy-loaded** (dynamic import) agar initial bundle tetap < 200KB
 
 ### Development Tools
 
@@ -115,7 +121,7 @@ gantiin/
 | First Contentful Paint | < 1.5s |
 | Largest Contentful Paint | < 2.5s |
 | Time to Interactive | < 3s |
-| Total Bundle Size | < 200KB (gzipped) |
+| Initial Bundle (JS) | < 200KB gzipped (libs konversi lazy-loaded) |
 | Conversion Time (10MB) | < 5s |
 
 ---
@@ -128,13 +134,15 @@ gantiin/
 ```http
 Content-Security-Policy: 
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval';
+  script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://umami.alltech.web.id;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: blob:;
   font-src 'self';
-  connect-src 'self';
+  connect-src 'self' https://umami.alltech.web.id;
   worker-src 'self' blob:;
 ```
+
+**Catatan CSP:** `'wasm-unsafe-eval'` diperlukan untuk menjalankan modul WASM (heic-to, @jsquash/webp). Domain Umami diizinkan untuk analytics.
 
 #### 2. Input Validation
 - Validate file types using magic bytes, not just extensions

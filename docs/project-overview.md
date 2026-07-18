@@ -22,7 +22,8 @@
 
 ### In Scope
 - PDF → Text/Word conversion
-- Image format conversion (PNG↔JPG↔WebP↔SVG)
+- Image format conversion (PNG↔JPG↔WebP, SVG→PNG/JPG)
+- HEIC → JPG conversion (iPhone photos)
 - PDF merge & split
 - Image resize & compress
 - Drag & drop upload
@@ -40,15 +41,18 @@
 - API for third-party integration
 
 ## Tech Stack
-- **Frontend:** Next.js 14+ (App Router) + TypeScript
-- **Styling:** Tailwind CSS + Shadcn/ui
+- **Frontend:** Next.js 16 (App Router, static export) + React 19 + TypeScript
+- **Styling:** Tailwind CSS v4 + Shadcn/ui
 - **State Management:** Zustand
 - **Validation:** Zod
-- **Conversion Engine:** Client-side (WASM/Libraries)
-  - PDF: pdf.js, pdf-lib
-  - Image: browser-image-compression, sharp (via WASM)
+- **Conversion Engine:** Client-side (Browser APIs + WASM, lazy-loaded)
+  - PDF extract/render: pdfjs-dist 6.x
+  - PDF merge/split/create: @cantoo/pdf-lib
+  - HEIC → JPG: heic-to (WASM)
+  - Image: Canvas API + @jsquash/webp (fallback Safari)
+  - Processing: Web Workers + OffscreenCanvas
 - **Hosting:** Vercel (free tier)
-- **Analytics:** Plausible (privacy-friendly)
+- **Analytics:** Umami (self-hosted: umami.alltech.web.id)
 - **Donation:** Saweria / Buy Me a Coffee
 
 ## Constraints

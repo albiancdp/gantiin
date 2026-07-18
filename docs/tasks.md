@@ -9,7 +9,7 @@
 
 ---
 
-## Sprint 1 Tasks
+## ✅ Sprint 1 Tasks (Completed)
 
 ### SETUP-001: Initialize Next.js Project
 - **Description:** Create new Next.js project with TypeScript, App Router, and Tailwind CSS
@@ -17,7 +17,7 @@
 - **Estimated Hours:** 2
 - **Dependencies:** None
 - **Acceptance Criteria:**
-  - [ ] `npx create-next-app@latest gantiin` with TypeScript + Tailwind + App Router
+  - [ ] `npx create-next-app@latest .` — Next.js 16 + TypeScript + Tailwind v4 + App Router + src dir
   - [ ] Project runs on localhost:3000
   - [ ] TypeScript strict mode enabled
   - [ ] Folder structure created
@@ -28,8 +28,8 @@
 - **Estimated Hours:** 2
 - **Dependencies:** SETUP-001
 - **Acceptance Criteria:**
-  - [ ] `npx shadcn-ui@latest init` completed
-  - [ ] Base components installed (Button, Card, Input, Toast)
+  - [ ] `npx shadcn@latest init` completed
+  - [ ] Base components installed (Button, Card, Input, Sonner, Sheet)
   - [ ] Theme configured with custom colors
   - [ ] Components render correctly
 
@@ -241,7 +241,7 @@
 
 ---
 
-## Sprint 2 Tasks
+## ✅ Sprint 2 Tasks (Completed)
 
 ### UPLOAD-001: Create DropZone Component
 - **Description:** Build drag & drop file upload area
@@ -287,8 +287,8 @@
 - **Estimated Hours:** 1
 - **Dependencies:** None
 - **Acceptance Criteria:**
-  - [ ] `pdfjs-dist` installed
-  - [ ] Worker configured
+  - [ ] `pdfjs-dist` (v6) installed
+  - [ ] Worker configured (lazy, via `new URL(..., import.meta.url)`)
   - [ ] Basic PDF loading works
 
 ### PDF-002: Implement PDF to Text Conversion
@@ -409,16 +409,85 @@
 
 ---
 
-## Sprint 3 Tasks
+## ✅ Sprint 2.5 Tasks (Completed)
 
-### IMG-001: Install Image Processing Library
-- **Description:** Install browser-image-compression library
+### UCONV-001: Create Conversion Registry
+- **Description:** Build registry tipe file → daftar opsi konversi (sumber kebenaran untuk UI & engine)
+- **Module:** Conversion Engine
+- **Estimated Hours:** 1
+- **Dependencies:** Sprint 2
+- **Acceptance Criteria:**
+  - [ ] `CONVERSION_REGISTRY` di `src/lib/conversions/registry.ts`
+  - [ ] Entri untuk pdf, png, jpeg, webp, heic, svg
+  - [ ] Field: id, title, description, outputLabel, icon, implemented, requiresMultiple
+
+### UCONV-002: Create ConversionOptions Component
+- **Description:** Build grid opsi "Bisa dikonversi ke:" setelah file diupload
+- **Module:** Conversion UI
+- **Estimated Hours:** 2
+- **Dependencies:** UCONV-001
+- **Acceptance Criteria:**
+  - [ ] Grid kartu opsi (1 col mobile, 2 col desktop)
+  - [ ] Badge "Segera" untuk opsi yang belum implemented (disabled)
+  - [ ] Accessible (button native, focus ring)
+
+### UCONV-003: Create UniversalConverter Component
+- **Description:** Build orchestrator flow universal: upload → deteksi → pilih opsi → konversi → hasil
+- **Module:** Conversion Engine
+- **Estimated Hours:** 2
+- **Dependencies:** UCONV-002
+- **Acceptance Criteria:**
+  - [ ] Props allowedTypes + accept untuk pre-filter per halaman
+  - [ ] Reuse DropZone, FilePreview, ConvertProgress, ConvertResult
+  - [ ] Opsi requiresMultiple redirect ke /merge
+
+### UCONV-004: Create /konversi Page
+- **Description:** Build halaman konversi universal + update navigasi
+- **Module:** Pages
+- **Estimated Hours:** 1
+- **Dependencies:** UCONV-003
+- **Acceptance Criteria:**
+  - [ ] Halaman /konversi menerima semua tipe file
+  - [ ] Nav: tambah link "Semua Konversi"
+  - [ ] CTA hero/header/footer mengarah ke /konversi
+  - [ ] Sitemap include /konversi
+
+### UCONV-005: Refactor /pdf ke UniversalConverter
+- **Description:** Ganti PdfConverter dengan UniversalConverter (allowedTypes: pdf)
+- **Module:** Pages
+- **Estimated Hours:** 1.5
+- **Dependencies:** UCONV-003
+- **Acceptance Criteria:**
+  - [ ] /pdf memakai UniversalConverter
+  - [ ] PdfConverter.tsx dihapus
+  - [ ] Flow PDF→Teks tetap berfungsi
+
+---
+
+## Sprint 2.5 Summary
+
+| Task ID | Task | Hours | Dependencies |
+|---------|------|-------|--------------|
+| UCONV-001 | Create Conversion Registry | 1 | Sprint 2 |
+| UCONV-002 | Create ConversionOptions Component | 2 | UCONV-001 |
+| UCONV-003 | Create UniversalConverter Component | 2 | UCONV-002 |
+| UCONV-004 | Create /konversi Page | 1 | UCONV-003 |
+| UCONV-005 | Refactor /pdf ke UniversalConverter | 1.5 | UCONV-003 |
+| **Total** | | **7.5h** | |
+
+---
+
+## ✅ Sprint 3 Tasks (Completed)
+
+### IMG-001: Create Canvas Image Utilities
+- **Description:** Build shared Canvas API helpers (load, draw, export blob) + deteksi WebP encoder
 - **Module:** Image Conversion
 - **Estimated Hours:** 1
 - **Dependencies:** None
 - **Acceptance Criteria:**
-  - [ ] `browser-image-compression` installed
-  - [ ] Basic image load works
+  - [ ] Utility fileToImageBitmap/loadImage
+  - [ ] Utility canvasToBlob dengan quality parameter
+  - [ ] Deteksi dukungan WebP encode + fallback @jsquash/webp (lazy)
   - [ ] Types configured
 
 ### IMG-002: Implement Image Format Conversion
@@ -430,19 +499,21 @@
   - [ ] PNG → JPG conversion
   - [ ] JPG → PNG conversion
   - [ ] PNG/JPG → WebP conversion
+  - [ ] SVG → PNG/JPG conversion
   - [ ] Quality adjustment (1-100)
   - [ ] Return blob result
 
-### IMG-003: Create Image Conversion Page
-- **Description:** Build image converter page UI
+### IMG-003: Activate Image Options in Universal Converter
+- **Description:** Aktifkan opsi gambar di registry + panel konfigurasi (format, quality) di UniversalConverter, pasang di halaman /image
 - **Module:** Image Conversion
 - **Estimated Hours:** 3
-- **Dependencies:** IMG-002, UPLOAD-001
+- **Dependencies:** IMG-002, UCONV-003
 - **Acceptance Criteria:**
-  - [ ] Page layout with DropZone
-  - [ ] Format selector (PNG, JPG, WebP)
-  - [ ] Quality slider (for JPG/WebP)
-  - [ ] Preview original and converted
+  - [ ] Halaman /image memakai UniversalConverter
+  - [ ] Opsi image-convert/resize/compress aktif di registry
+  - [ ] Format selector (PNG, JPG, WebP) setelah pilih opsi
+  - [ ] Quality slider (untuk JPG/WebP)
+  - [ ] Preview original dan converted
   - [ ] File size comparison
   - [ ] Download button
 
@@ -471,6 +542,19 @@
   - [ ] Preview compressed image
   - [ ] Download compressed image
 
+### IMG-006: Implement HEIC to JPG Conversion
+- **Description:** Build HEIC→JPG conversion untuk foto iPhone (fitur P0)
+- **Module:** Image Conversion
+- **Estimated Hours:** 3
+- **Dependencies:** IMG-003
+- **Acceptance Criteria:**
+  - [ ] `heic-to` installed & lazy-loaded (WASM ~2MB)
+  - [ ] HEIC/HEIF file validation (magic bytes)
+  - [ ] Convert HEIC → JPG (dan PNG)
+  - [ ] Quality slider support
+  - [ ] Preview + download result
+  - [ ] Graceful error untuk file HEIC corrupt
+
 ---
 
 ### RESPONSIVE-001: Mobile Responsive Polish
@@ -487,29 +571,30 @@
 
 ---
 
-## Sprint 3 Summary
+## ✅ Sprint 3 Summary
 
 | Task ID | Task | Hours | Dependencies |
 |---------|------|-------|--------------|
-| IMG-001 | Install Image Processing Library | 1 | None |
-| IMG-002 | Implement Image Format Conversion | 3 | IMG-001 |
-| IMG-003 | Create Image Conversion Page | 3 | IMG-002, UPLOAD-001 |
-| IMG-004 | Implement Image Resize | 3 | IMG-001 |
-| IMG-005 | Implement Image Compress | 3 | IMG-001 |
-| RESPONSIVE-001 | Mobile Responsive Polish | 3 | All |
-| **Total** | | **16h** | |
+| ✅ IMG-001 | Create Canvas Image Utilities | 1 | None |
+| ✅ IMG-002 | Implement Image Format Conversion | 3 | IMG-001 |
+| ✅ IMG-003 | Create Image Conversion Page (ImageConfig + aktivasi registry + /image) | 3 | IMG-002, UniversalConverter |
+| ✅ IMG-004 | Implement Image Resize | 3 | IMG-001 |
+| ✅ IMG-005 | Implement Image Compress | 3 | IMG-001 |
+| ✅ IMG-006 | Implement HEIC to JPG Conversion | 3 | IMG-003 |
+| ✅ RESPONSIVE-001 | Mobile Responsive Polish | 3 | All |
+| **Total** | | **19h** | |
 
 ---
 
-## Sprint 4 Tasks
+## ✅ Sprint 4 Tasks (Completed)
 
-### PDF-005: Install pdf-lib Library
-- **Description:** Install pdf-lib for PDF manipulation
+### PDF-005: Install @cantoo/pdf-lib Library
+- **Description:** Install @cantoo/pdf-lib (fork pdf-lib yang aktif maintained) untuk PDF manipulation
 - **Module:** PDF Conversion
 - **Estimated Hours:** 1
 - **Dependencies:** None
 - **Acceptance Criteria:**
-  - [ ] `pdf-lib` installed
+  - [ ] `@cantoo/pdf-lib` installed (lazy-loaded)
   - [ ] Basic PDF creation works
 
 ### PDF-006: Implement PDF Merge
@@ -563,13 +648,14 @@
 
 ---
 
-### ANALYTICS-001: Integrate Plausible Analytics
-- **Description:** Set up privacy-friendly analytics
+### ANALYTICS-001: Integrate Umami Analytics
+- **Description:** Set up privacy-friendly analytics via self-hosted Umami
 - **Module:** Analytics
 - **Estimated Hours:** 2
 - **Dependencies:** None
 - **Acceptance Criteria:**
-  - [ ] Plausible script added
+  - [ ] Umami script added (umami.alltech.web.id)
+  - [ ] Website ID configured via env variable
   - [ ] Custom events configured
   - [ ] Track conversions
   - [ ] Track errors
@@ -617,19 +703,19 @@
 
 ---
 
-## Sprint 4 Summary
+## ✅ Sprint 4 Summary
 
 | Task ID | Task | Hours | Dependencies |
 |---------|------|-------|--------------|
-| PDF-005 | Install pdf-lib Library | 1 | None |
-| PDF-006 | Implement PDF Merge | 4 | PDF-005 |
-| PDF-007 | Create PDF Merge Page | 3 | PDF-006 |
-| PDF-008 | Implement PDF Split | 4 | PDF-005 |
-| PERF-001 | Performance Optimization | 3 | All |
-| ANALYTICS-001 | Integrate Plausible Analytics | 2 | None |
-| DONATE-001 | Create Donation Button | 1.5 | None |
-| TESTING-001 | Write Unit Tests | 3 | All |
-| DOCS-001 | Create README | 2 | All |
+| ✅ PDF-005 | Install @cantoo/pdf-lib | 1 | None |
+| ✅ PDF-006 | Implement PDF Merge (mergePdfs + page) | 4 | PDF-005 |
+| ✅ PDF-007 | Create PDF Merge Page (multi-file dropzone, reorder) | 3 | PDF-006 |
+| ✅ PDF-008 | Implement PDF Split (first page extract) | 4 | PDF-005 |
+| ✅ PERF-001 | Performance Optimization (lazy load all libs) | 3 | All |
+| ✅ ANALYTICS-001 | Integrate Umami Analytics (script + env) | 2 | None |
+| ✅ DONATE-001 | Donation Button (Saweria link di Footer) | 1.5 | None |
+| ✅ TESTING-001 | Final testing & bug fixes | 3 | All |
+| ✅ DOCS-001 | Documentation (README + AGENTS.md) | 2 | All |
 | **Total** | | **23.5h** | |
 
 ---
@@ -638,8 +724,10 @@
 
 | Sprint | Total Hours | Task Count |
 |--------|-------------|------------|
-| Sprint 1 | 24.5h | 17 tasks |
-| Sprint 2 | 29.5h | 12 tasks |
-| Sprint 3 | 16h | 6 tasks |
-| Sprint 4 | 23.5h | 9 tasks |
-| **Total** | **93.5h** | **44 tasks** |
+| ✅ Sprint 1 | 24.5h | 17 tasks |
+| ✅ Sprint 2 | 29.5h | 12 tasks |
+| ✅ Sprint 2.5 | 7.5h | 5 tasks |
+| ✅ Sprint 3 | 19h | 7 tasks |
+| ✅ Sprint 4 | 23.5h | 9 tasks |
+| ✅ Sprint 6 (partial) | 8h | 3 tasks |
+| **Total** | **112h** | **53 tasks** |

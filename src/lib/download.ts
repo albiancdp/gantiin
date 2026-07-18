@@ -1,0 +1,18 @@
+/**
+ * Trigger download file dari Blob menggunakan <a download> native.
+ */
+export function downloadBlob(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+export function replaceExtension(filename: string, newExtension: string): string {
+  const base = filename.replace(/\.[^/.]+$/, "");
+  return `${base}.${newExtension}`;
+}

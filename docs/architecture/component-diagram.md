@@ -1,5 +1,7 @@
 # Component Diagram
 
+> Aktual per Sprint 2.5 (19 Juli 2026).
+
 ## Component Hierarchy
 
 ```mermaid
@@ -8,57 +10,49 @@ graph LR
         Header
         Footer
         ThemeToggle
+        Container
     end
-    
+
     subgraph Pages
-        Landing[ Landing Page ]
-        PDF[ PDF Converter ]
-        Image[ Image Converter ]
-        Merge[ PDF Merge ]
+        Landing[Landing Page]
+        Konversi[/konversi]
+        PDF[/pdf]
+        Image[/image]
+        Merge[/merge]
     end
-    
-    subgraph Shared
-        DropZone
-        FilePreview
-        ConvertButton
+
+    subgraph ConverterFlow[Universal Converter Flow]
+        UniversalConverter
+        ConversionOptions
         ConvertProgress
         ConvertResult
-        DonateButton
     end
-    
+
+    subgraph Upload
+        DropZone
+        FilePreview
+    end
+
     subgraph Conversion
+        Registry[Conversion Registry]
         Engine[Conversion Engine]
-        PDFLib[PDF Library]
-        ImageLib[Image Library]
+        PDFLib[pdf.js lazy]
     end
-    
-    subgraph State
-        ThemeStore[Theme Store]
-        ConvStore[Converter Store]
-    end
-    
-    Header --> ThemeToggle
-    Landing --> DropZone
-    PDF --> DropZone
-    PDF --> ConvertButton
-    PDF --> ConvertProgress
-    PDF --> ConvertResult
-    Image --> DropZone
-    Image --> ConvertButton
-    Image --> ConvertProgress
-    Image --> ConvertResult
-    Merge --> DropZone
-    Merge --> ConvertButton
-    Merge --> ConvertProgress
-    Merge --> ConvertResult
-    
-    DropZone --> FilePreview
-    ConvertButton --> Engine
+
+    Konversi --> UniversalConverter
+    PDF --> UniversalConverter
+    Image --> UniversalConverter
+    Merge --> UniversalConverter
+
+    UniversalConverter --> DropZone
+    UniversalConverter --> FilePreview
+    UniversalConverter --> ConversionOptions
+    UniversalConverter --> ConvertProgress
+    UniversalConverter --> ConvertResult
+
+    ConversionOptions --> Registry
+    UniversalConverter --> Engine
     Engine --> PDFLib
-    Engine --> ImageLib
-    
-    ThemeToggle --> ThemeStore
-    ConvertButton --> ConvStore
 ```
 
 ---
@@ -69,102 +63,106 @@ graph LR
 
 #### Header
 - **Props:** None
-- **Renders:** Logo, Navigation, ThemeToggle
-- **Behavior:** Sticky top, responsive (hamburger menu on mobile)
+- **Renders:** Logo, Navigation (dari `siteConfig.nav`), ThemeToggle, CTA, mobile Sheet menu
+- **Behavior:** Sticky top, backdrop blur, hamburger menu di mobile
 
 #### Footer
 - **Props:** None
-- **Renders:** Copyright, Links, DonateButton
+- **Renders:** Logo, nav links, tombol donasi Saweria, copyright
 - **Behavior:** Static bottom
 
 #### ThemeToggle
 - **Props:** None
-- **Renders:** Sun/Moon icon button
-- **Behavior:** Toggle dark/light mode, save to localStorage
+- **Renders:** Sun/Moon icon (CSS `dark:` variant — tanpa JS state)
+- **Behavior:** Toggle dark/light via next-themes
+
+#### Container
+- **Props:** `className?`, children
+- **Renders:** Max-width wrapper (max-w-6xl, responsive padding)
 
 ---
 
 ### Upload Components
 
 #### DropZone
-- **Props:** `onFileSelect: (file: File) => void`, `accept?: string[]`
-- **Renders:** Drag & drop area with visual feedback
-- **Behavior:** 
-  - Handle drag events (dragenter, dragleave, drop)
-  - Validate file on drop
-  - Call onFileSelect with validated file
-  - Show error toast for invalid files
-
-#### FileInput
-- **Props:** `onFileSelect: (file: File) => void`, `accept?: string[]`
-- **Renders:** Hidden file input with styled button
+- **Props:** `onFilesSelected: (files: File[]) => void`, `accept: string`, `multiple?`, `disabled?`, `title?`, `description?`
+- **Renders:** Drag & drop area dengan visual feedback
 - **Behavior:**
-  - Trigger file input click
-  - Handle file selection
-  - Validate file
-  - Call onFileSelect
+  - Handle drag events (dragover highlight, drop)
+  - Click-to-browse via hidden input
+  - Keyboard accessible (role button, Enter/Space)
+  - Validasi dilakukan oleh pemanggil (`useFileUpload`), bukan di dalam DropZone
 
 #### FilePreview
-- **Props:** `file: File`, `type: 'pdf' | 'image'`
-- **Renders:** Preview of uploaded file
+- **Props:** `file: File`, `fileType: SupportedFileType`, `thumbnail?: string | null`, `onRemove: () => void`
+- **Renders:** Preview card (thumbnail/icon + nama + ukuran + tipe)
 - **Behavior:**
-  - PDF: Show first page thumbnail
-  - Image: Show image preview
-  - Show file metadata (name, size, type)
+  - PDF: thumbnail dari `renderPdfThumbnail` (via prop)
+  - Image: object URL via `useMemo` + revoke di cleanup effect
+  - Loading state: skeleton pulse saat `thumbnail === undefined`
 
 ---
 
-### Conversion Components
+### Universal Converter Components
 
-#### ConvertButton
-- **Props:** `onClick: () => void`, `disabled?: boolean`, `loading?: boolean`
-- **Renders:** Primary action button
+#### UniversalConverter
+- **Props:** `allowedTypes: SupportedFileType[]`, `accept: string`, `dropzoneDescription?`
+- **Renders:** DropZone → FilePreview + ConversionOptions → ConvertProgress → ConvertResult
 - **Behavior:**
-  - Show loading state during conversion
-  - Disable during conversion
-  - Trigger conversion on click
+  - Orchestrator utama, dipakai `/konversi`, `/pdf`, `/image`, `/merge`
+  - Opsi `requiresMultiple` redirect ke `/merge`
+  - Thumbnail PDF di-generate async setelah upload
+
+#### ConversionOptions
+- **Props:** `fileType: SupportedFileType`, `onSelect: (option: ConversionOption) => void`
+- **Renders:** Grid kartu "Bisa dikonversi ke:" dari `CONVERSION_REGISTRY`
+- **Behavior:**
+  - Opsi `implemented: false` → disabled + badge "Segera"
+  - Opsi aktif → hover effect + arrow indicator
 
 #### ConvertProgress
-- **Props:** `progress: number`, `status: string`
-- **Renders:** Progress bar with status text
-- **Behavior:**
-  - Show animated progress bar
-  - Display current status (Loading, Converting, Done)
-  - Show percentage
+- **Props:** `progress: number`, `statusText?: string`
+- **Renders:** Progress bar + persentase + spinner
+- **Behavior:** `aria-live="polite"` untuk screen reader
 
 #### ConvertResult
-- **Props:** `result: Blob | string`, `filename: string`, `format: string`
-- **Renders:** Result preview + download button
+- **Props:** `result: ConversionResultData`, `onReset: () => void`
+- **Renders:** Info file hasil + tombol Download/Copy + preview teks
 - **Behavior:**
-  - Show text result or image preview
-  - Provide download button
-  - Provide copy to clipboard button (for text)
+  - Download via `downloadBlob` (native `<a download>`)
+  - Copy to clipboard dengan feedback "Tersalin"
+  - "Konversi file lain" → reset flow
 
 ---
 
-### State Management
+### Hooks & State
 
-#### Theme Store (Zustand)
-```typescript
-interface ThemeStore {
-  theme: 'light' | 'dark' | 'system'
-  setTheme: (theme: 'light' | 'dark' | 'system') => void
-}
-```
+State dikelola via **React hooks lokal** (bukan Zustand untuk saat ini):
 
-#### Converter Store (Zustand)
+#### useFileUpload(allowedTypes)
 ```typescript
-interface ConverterStore {
+{
   file: File | null
-  result: Blob | string | null
-  progress: number
-  status: 'idle' | 'loading' | 'converting' | 'done' | 'error'
-  error: string | null
-  setFile: (file: File) => void
-  convert: (options: ConvertOptions) => Promise<void>
+  fileType: SupportedFileType | null
+  selectFile: (file: File) => Promise<SupportedFileType | false>
   reset: () => void
 }
 ```
+
+#### useConversion()
+```typescript
+{
+  status: 'idle' | 'converting' | 'done' | 'error'
+  progress: number
+  result: ConversionResultData | null
+  error: string | null
+  convert: (file: File, type: ConversionType) => Promise<void>
+  reset: () => void
+}
+```
+
+#### Theme
+Dikelola **next-themes** (bukan Zustand) — persist otomatis ke localStorage.
 
 ---
 
@@ -172,14 +170,14 @@ interface ConverterStore {
 
 ```mermaid
 graph TD
-    User[User Action] --> Component[UI Component]
-    Component --> Hook[React Hook]
-    Hook --> Store[Zustand Store]
-    Hook --> Conversion[Conversion Engine]
-    Conversion --> Worker[Web Worker]
-    Worker --> Library[Conversion Library]
-    Library --> Result[Converted File]
-    Result --> Store
-    Store --> Component
-    Component --> User
+    User[User Action] --> DropZone
+    DropZone --> Upload[useFileUpload]
+    Upload --> Validasi[validations.ts magic bytes]
+    Validasi --> Options[ConversionOptions dari Registry]
+    Options --> Hook[useConversion]
+    Hook --> Engine[Conversion Engine]
+    Engine --> PDFLib[pdf.js worker internal]
+    PDFLib --> Result[ConversionResultData]
+    Result --> ConvertResult
+    ConvertResult --> Download[downloadBlob native]
 ```

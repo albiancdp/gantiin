@@ -50,6 +50,24 @@
 
 ---
 
+## Sprint 2.5: Universal Converter Flow
+**Goal:** Flow upload → pilih konversi + halaman /konversi
+
+**Target:** Antara minggu 4-5
+
+| Story | Points | Hours | Dependencies |
+|-------|--------|-------|--------------|
+| Conversion registry | 1 | 1h | Sprint 2 |
+| ConversionOptions component | 2 | 2h | Registry |
+| UniversalConverter orchestration | 2 | 2h | Options |
+| /konversi page + nav/CTA/sitemap | 1 | 1h | UniversalConverter |
+| Refactor /pdf ke UniversalConverter | 1 | 1.5h | UniversalConverter |
+| **Total** | **7** | **7.5h** | |
+
+**Sprint Goal:** User upload file dan memilih dari daftar "Bisa dikonversi ke:"
+
+---
+
 ## Sprint 3: Image Conversion
 **Goal:** Image format conversion working
 
@@ -63,10 +81,11 @@
 | File size comparison display | 1 | 2h | Image conversion |
 | Image resize feature | 3 | 4h | Image conversion |
 | Image compress feature | 3 | 4h | Image conversion |
+| HEIC → JPG conversion (iPhone photos) | 2 | 3h | Image conversion |
 | Mobile responsive polish | 2 | 3h | All |
-| **Total** | **18** | **25h** | |
+| **Total** | **20** | **28h** | |
 
-**Sprint Goal:** User bisa konversi, resize, dan compress gambar
+**Sprint Goal:** User bisa konversi, resize, compress gambar, dan konversi HEIC (iPhone)
 
 ---
 
@@ -81,7 +100,7 @@
 | PDF split feature | 3 | 5h | Sprint 2 |
 | Batch file selection (multiple files) | 2 | 3h | Sprint 2 |
 | Performance optimization | 2 | 4h | All |
-| Analytics integration (Plausible) | 1 | 2h | All |
+| Analytics integration (Umami) | 1 | 2h | All |
 | Donation button (Saweria) | 1 | 2h | All |
 | Final testing & bug fixes | 2 | 4h | All |
 | Documentation (README) | 1 | 2h | All |
@@ -135,11 +154,11 @@
 |--------|------|---------|--------|-------|--------|
 | S1 | Foundation | 8 | 18 | 25h | Minggu 1-2 |
 | S2 | Core Upload & PDF | 8 | 19 | 30h | Minggu 3-4 |
-| S3 | Image Conversion | 7 | 18 | 25h | Minggu 5-6 |
+| S2.5 | Universal Converter Flow | 5 | 7 | 7.5h | Minggu 4-5 |
+| S3 | Image Conversion | 8 | 20 | 28h | Minggu 5-6 |
 | S4 | Extended PDF & Polish | 8 | 15 | 27h | Minggu 7-8 |
-| S5 | Growth Features | 6 | 14 | 25h | Bulan 3 |
-| S6 | Monetization | 6 | 14 | 23h | Bulan 4-5 |
-| **Total** | | **43** | **98** | **155h** | **5 bulan** |
+| S6 | Monetization (partial) | 2 | 5 | 8h | - |
+| **Total** | | **39** | **84** | **125.5h** | |
 
 ---
 
@@ -147,9 +166,9 @@
 
 | Sprint | Planned | Completed | Velocity |
 |--------|---------|-----------|----------|
-| S1 | 18 | - | - |
-| S2 | 19 | - | - |
-| S3 | 18 | - | - |
-| S4 | 15 | - | - |
-| S5 | 14 | - | - |
-| S6 | 14 | - | - |
+| S1 | 18 | 18 | 18 |
+| S2 | 19 | 19 | 19 |
+| S2.5 | 7 | 7 | 7 |
+| S3 | 20 | 20 | 20 |
+| S4 | 15 | 15 | 15 |
+| S6 (partial) | 5 | 5 | 5 |

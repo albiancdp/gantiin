@@ -160,27 +160,29 @@ Target: 10,000 MAU dalam 6 bulan pertama dengan revenue dari donasi komunitas.
 ### Flow 1: PDF to Text Conversion
 
 ```
-1. User buka landing page
-2. User klik "Konversi PDF" atau drag PDF ke area upload
-3. System tampilkan preview PDF (halaman pertama)
-4. User klik "Konversi"
-5. System proses konversi (tampilkan progress)
-6. System tampilkan hasil text
-7. User klik "Download" atau "Copy to Clipboard"
-8. Selesai
+1. User buka halaman /konversi (atau /pdf)
+2. User drag PDF ke area upload (atau klik untuk pilih)
+3. System deteksi tipe file (magic bytes) + tampilkan preview (halaman pertama)
+4. System tampilkan daftar opsi "Bisa dikonversi ke:"
+5. User pilih "PDF ke Teks"
+6. System proses konversi (tampilkan progress)
+7. System tampilkan hasil text
+8. User klik "Download" atau "Copy to Clipboard"
+9. Selesai
 ```
 
 ### Flow 2: Image Format Conversion
 
 ```
-1. User buka landing page
-2. User klik "Konversi Gambar" atau drag gambar
-3. System tampilkan preview gambar + format asli
-4. User pilih format tujuan (PNG/JPG/WebP)
-5. User atur quality (optional)
-6. System tampilkan preview hasil
-7. User klik "Download"
-8. Selesai
+1. User buka halaman /konversi (atau /image)
+2. User drag gambar ke area upload
+3. System deteksi tipe file + tampilkan preview gambar
+4. System tampilkan daftar opsi "Bisa dikonversi ke:"
+5. User pilih "Ganti Format"
+6. User pilih format tujuan (PNG/JPG/WebP) + atur quality (optional)
+7. System tampilkan preview hasil + perbandingan ukuran
+8. User klik "Download"
+9. Selesai
 ```
 
 ### Flow 3: PDF Merge

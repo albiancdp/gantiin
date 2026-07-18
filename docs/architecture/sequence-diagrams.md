@@ -10,56 +10,57 @@
 ```mermaid
 sequenceDiagram
     actor User
-    participant UI as Next.js UI
+    participant UI as UniversalConverter
     participant Drop as DropZone
+    participant Opt as ConversionOptions
     participant Conv as Conversion Engine
-    participant Worker as Web Worker
-    participant Lib as pdf.js
+    participant Lib as pdf.js (worker internal)
 
     User->>Drop: Drag & drop PDF file
-    Drop->>UI: onDrop(file)
-    UI->>UI: Validate file type & size
-    UI->>Conv: convertFile(file, {type: 'pdf-to-text'})
-    Conv->>Worker: Post file to worker
-    Worker->>Lib: Load PDF document
-    Lib-->>Worker: PDF document
-    Worker->>Lib: Extract text from pages
-    Lib-->>Worker: Text content
-    Worker->>Conv: Return converted text
-    Conv->>UI: Update state with result
+    Drop->>UI: onFilesSelected([file])
+    UI->>UI: validateFile (magic bytes + size)
+    UI->>Lib: renderPdfThumbnail (async, lazy-load)
+    Lib-->>UI: Thumbnail halaman 1
+    UI->>Opt: Tampilkan opsi "Bisa dikonversi ke:"
+    User->>Opt: Pilih "PDF ke Teks"
+    Opt->>UI: onSelect(option)
+    UI->>Conv: convertFile(file, 'pdf-to-text', onProgress)
+    Conv->>Lib: getDocument + extract text per halaman
+    Lib-->>Conv: Text content + progress %
+    Conv-->>UI: ConversionResultData (blob .txt)
     UI->>User: Show text preview + download button
     User->>UI: Click download
-    UI->>UI: Create blob and trigger download
+    UI->>UI: downloadBlob (native <a download>)
 ```
 
 ---
 
-## Image Format Conversion Flow
+## Image Format Conversion Flow (Sprint 3)
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant UI as Next.js UI
+    participant UI as UniversalConverter
     participant Drop as DropZone
+    participant Opt as ConversionOptions
     participant Conv as Conversion Engine
-    participant Worker as Web Worker
-    participant Lib as Image Library
+    participant Canvas as Canvas API
 
     User->>Drop: Drag & drop image file
-    Drop->>UI: onDrop(file)
-    UI->>UI: Validate file type & size
-    UI->>UI: Show image preview
+    Drop->>UI: onFilesSelected([file])
+    UI->>UI: validateFile (magic bytes + size)
+    UI->>UI: Show image preview (object URL)
+    UI->>Opt: Tampilkan opsi "Bisa dikonversi ke:"
+    User->>Opt: Pilih "Ganti Format"
     User->>UI: Select target format (JPG/PNG/WebP)
     User->>UI: Adjust quality (optional)
-    UI->>Conv: convertFile(file, {format, quality})
-    Conv->>Worker: Post file + options
-    Worker->>Lib: Process image conversion
-    Lib-->>Worker: Converted image
-    Worker->>Conv: Return blob
-    Conv->>UI: Update state with result
+    UI->>Conv: convertFile(file, 'image-convert', options)
+    Conv->>Canvas: createImageBitmap + draw + toBlob
+    Canvas-->>Conv: Converted image blob
+    Conv-->>UI: ConversionResultData
     UI->>User: Show converted preview + download button
     User->>UI: Click download
-    UI->>UI: Create blob URL and trigger download
+    UI->>UI: downloadBlob (native <a download>)
 ```
 
 ---
@@ -134,15 +135,14 @@ sequenceDiagram
 sequenceDiagram
     actor User
     participant UI as ThemeToggle
-    participant Store as Zustand Store
+    participant NT as next-themes
     participant Local as localStorage
 
     User->>UI: Click theme toggle
-    UI->>Store: toggleTheme()
-    Store->>Local: Save preference
-    Store->>UI: Update state
-    UI->>UI: Apply theme class to <html>
-    UI->>User: Theme changed
+    UI->>NT: setTheme('light' | 'dark')
+    NT->>Local: Save preference (otomatis)
+    NT->>UI: Apply class .dark ke <html>
+    UI->>User: Theme changed (icon Sun/Moon via CSS dark: variant)
 ```
 
 ---
@@ -153,14 +153,13 @@ sequenceDiagram
 sequenceDiagram
     actor User
     participant UI as ConvertResult
-    participant FS as file-saver
+    participant DL as downloadBlob
     participant Browser as Browser
 
     User->>UI: Click download button
-    UI->>UI: Get blob from state
-    UI->>FS: saveAs(blob, filename)
-    FS->>Browser: Create object URL
-    FS->>Browser: Trigger download
+    UI->>DL: downloadBlob(blob, filename)
+    DL->>Browser: URL.createObjectURL(blob)
+    DL->>Browser: <a download> click (native)
     Browser->>User: File saved to downloads
-    UI->>UI: Revoke object URL (cleanup)
+    DL->>DL: Revoke object URL (cleanup)
 ```
