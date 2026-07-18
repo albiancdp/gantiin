@@ -15,6 +15,9 @@ Konverter file online, gratis, 100% client-side untuk Indonesia.
 - **shadcn/ui (Base UI)** — komposisi via `render={<Link/>}`, bukan `asChild`. Saat Button jadi link, tambah `nativeButton={false}`.
 - **pdfjs-dist 6** — lazy load (`new URL(..., import.meta.url)` worker). Cleanup via `loadingTask.destroy()` (bukan `doc.destroy()`).
 - **@cantoo/pdf-lib** — PDF manipulation (merge/split)
+- **Tesseract.js 7** — OCR (WASM, lazy load, `ind+eng`)
+- **docx** — DOCX generation (Gambar→DOC)
+- **JSZip** — ZIP output (PDF→Gambar multi-file)
 - **heic-to** — HEIC→JPG (WASM lazy load)
 - **Canvas API + @jsquash/webp** — image conversion (fallback WebP if native unavailable)
 - **Umami self-hosted** — analytics (umami.alltech.web.id)
@@ -35,8 +38,21 @@ Konverter file online, gratis, 100% client-side untuk Indonesia.
 | pdfjs-dist v6: `doc.destroy()` doesn't exist | Use `loadingTask.destroy()` |
 | `setState` in `useEffect` triggers lint error | Move to `useMemo` or event handler |
 | Tailwind v4: CSS-first, no `tailwind.config.js` | Use `@theme` in CSS file |
+| Tesseract.js v7: word data via `blocks: true` | `data.words` tidak ada di top-level; pakai `data.blocks[].paragraphs[].lines[].words[]` |
+| docx library: `Paragraph` dan `TextRun` class | `children: ParagraphChild[]` — `TextRun`, `ImageRun` |
 
-## Completed Sprints
+## Halaman Live
+
+| Route | Konten |
+|-------|--------|
+| `/` | Landing page |
+| `/konversi` | Universal converter (all file types) |
+| `/pdf` | Konversi PDF |
+| `/image` | Konversi gambar |
+| `/merge` | Merge PDF |
+| `/dukung` | Donasi via Trakteer |
+
+## Completed Work
 
 | Sprint | What |
 |--------|------|
@@ -46,5 +62,8 @@ Konverter file online, gratis, 100% client-side untuk Indonesia.
 | S3 | Image conversion (PNG↔JPG↔WebP, resize, compress, HEIC, SVG), ImageConfig, /image page |
 | S4 | PDF merge/split (@cantoo/pdf-lib), Umami analytics, .env.example, /merge page |
 | S6 | Halaman /dukung, sponsor section, navigasi donasi |
+| Post-MVP | Gambar→DOC (OCR→DOCX dengan layout preservation), Gambar→Teks (OCR), Gambar→PDF, PDF→Gambar (ZIP), Split PDF (range halaman), Trakteer donation, docs update, Git SSH |
 
-All sprints completed. Project is feature-complete for MVP.
+## Open Issues
+
+- **Image→DOCX layout tidak faithful** — `docs/BUG-IMAGE-TO-DOC-LAYOUT.md`. OCR bounding box → DOCX flow-based mapping inherently limited. Suggested fix: `@turbodocx/html-to-docx` atau layout analysis model.

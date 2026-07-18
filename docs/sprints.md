@@ -148,6 +148,25 @@
 
 ---
 
+## Post-MVP (Bulan 5+)
+
+**Goal:** Fitur tambahan dari backlog
+
+| Story | Points | Hours |
+|-------|--------|-------|
+| PDF→Gambar (ZIP, pilih halaman) | 2 | 3h |
+| Split PDF (range halaman) | 1 | 2h |
+| Gambar→PDF (via pdf-lib) | 1 | 2h |
+| Gambar→Teks (OCR Tesseract.js) | 2 | 3h |
+| Gambar→DOC (OCR→DOCX layout preservation) | 3 | 4h |
+| Trakteer donation | 1 | 0.5h |
+| Git SSH setup + push | 1 | 0.5h |
+| Bug report documentation | 1 | 0.5h |
+| README update | 1 | 0.5h |
+| **Total** | **13** | **16h** |
+
+---
+
 ## Sprint Summary
 
 | Sprint | Goal | Stories | Points | Hours | Target |
@@ -158,7 +177,8 @@
 | S3 | Image Conversion | 8 | 20 | 28h | Minggu 5-6 |
 | S4 | Extended PDF & Polish | 8 | 15 | 27h | Minggu 7-8 |
 | S6 | Monetization (partial) | 2 | 5 | 8h | - |
-| **Total** | | **39** | **84** | **125.5h** | |
+| Post-MVP | Extra features & polish | 9 | 13 | 16h | Bulan 5+ |
+| **Total** | | **48** | **97** | **141.5h** | |
 
 ---
 
@@ -172,3 +192,4 @@
 | S3 | 20 | 20 | 20 |
 | S4 | 15 | 15 | 15 |
 | S6 (partial) | 5 | 5 | 5 |
+| Post-MVP | 13 | 13 | 13 |

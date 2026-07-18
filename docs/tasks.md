@@ -731,3 +731,90 @@
 | ✅ Sprint 4 | 23.5h | 9 tasks |
 | ✅ Sprint 6 (partial) | 8h | 3 tasks |
 | **Total** | **112h** | **53 tasks** |
+
+---
+
+## Post-MVP Tasks (Completed)
+
+### PMVP-001: PDF → Gambar (ZIP)
+- **Description:** Render tiap halaman PDF ke gambar (scale 1.5×), kumpulkan dalam ZIP
+- **Module:** PDF Conversion
+- **Estimated Hours:** 3
+- **Acceptance Criteria:**
+  - [ ] Render halaman via pdf.js canvas (PNG/JPG)
+  - [ ] Opsi pilih halaman (page range)
+  - [ ] Output ZIP via JSZip
+
+### PMVP-002: Split PDF (range halaman)
+- **Description:** Split PDF dengan input range (`1-5`, `1,3,5-7`)
+- **Module:** PDF Conversion
+- **Estimated Hours:** 2
+- **Acceptance Criteria:**
+  - [ ] Parsing page range string
+  - [ ] Copy selected pages ke PDF baru via @cantoo/pdf-lib
+
+### PMVP-003: Gambar → PDF
+- **Description:** Konversi gambar ke PDF via canvas → @cantoo/pdf-lib embed
+- **Module:** Image Conversion
+- **Estimated Hours:** 2
+- **Acceptance Criteria:**
+  - [ ] Load image ke canvas, export PNG bytes
+  - [ ] Embed ke PDF via pdf-lib
+  - [ ] Dukung semua format input
+
+### PMVP-004: Gambar → Teks (OCR)
+- **Description:** OCR via Tesseract.js, download .txt
+- **Module:** Image Conversion
+- **Estimated Hours:** 3
+- **Acceptance Criteria:**
+  - [ ] Tesseract.js lazy load (WASM)
+  - [ ] `ind+eng` language
+  - [ ] Progress bar OCR
+  - [ ] Preview + copy + download .txt
+
+### PMVP-005: Gambar → DOC (OCR → DOCX)
+- **Description:** OCR → DOCX dengan layout preservation (font size, alignment, paragraph grouping)
+- **Module:** Image Conversion
+- **Estimated Hours:** 4
+- **Acceptance Criteria:**
+  - [ ] Tesseract blocks → word-level bounding box
+  - [ ] Font size dari DPI estimasi
+  - [ ] Alignment detection (left/center/right)
+  - [ ] Paragraph grouping dari vertical gap
+  - [ ] Font name dari OCR (jika ada)
+  - [ ] Word spacing proporsional
+
+### PMVP-006: Trakteer Donation
+- **Description:** Ganti link donasi dari Saweria ke Trakteer
+- **Module:** Donation
+- **Estimated Hours:** 0.5
+- **Acceptance Criteria:**
+  - [ ] URL di constants.ts update
+  - [ ] Button label update
+  - [ ] Semua komponen (Footer, SupportSection, /dukung) reflect change
+
+### PMVP-007: Git SSH & Push
+- **Description:** Setup git remote SSH, commit & push semua file
+- **Module:** Infrastructure
+- **Estimated Hours:** 0.5
+- **Acceptance Criteria:**
+  - [ ] Remote URL SSH
+  - [ ] First push ke GitHub
+
+### PMVP-008: Bug Report Image→DOC
+- **Description:** Dokumentasi issue layout preservation Gambar→DOCX
+- **Module:** Documentation
+- **Estimated Hours:** 0.5
+- **Acceptance Criteria:**
+  - [ ] `docs/BUG-IMAGE-TO-DOC-LAYOUT.md` berisi root cause, approaches, next steps
+
+### PMVP-009: Update README
+- **Description:** Update README with current features, tech stack, pages
+- **Module:** Documentation
+- **Estimated Hours:** 0.5
+- **Acceptance Criteria:**
+  - [ ] Fitur lengkap (bukan "Coming Soon")
+  - [ ] Tech stack terkini
+  - [ ] Halaman lengkap
+  - [ ] Struktur project update
+  - [ ] Link donasi Trakteer
