@@ -1,0 +1,12 @@
+services:
+  gantiin:
+    build: .
+    container_name: gantiin
+    restart: unless-stopped
+    ports:
+      - "8084:80"
+    deploy:
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.25"
