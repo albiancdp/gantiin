@@ -14,6 +14,7 @@ import {
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import { Container } from "@/components/layout/Container";
 import { siteConfig } from "@/lib/constants";
+import { APP_VERSION } from "@/lib/version";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -25,7 +26,10 @@ export function Header() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <ArrowRightLeft className="size-4" aria-hidden />
           </span>
-          <span className="text-lg font-bold tracking-tight">Gantiin</span>
+          <div className="flex flex-col leading-tight">
+            <span className="text-lg font-bold tracking-tight">Gantiin</span>
+            <span className="text-[10px] text-muted-foreground/60">v{APP_VERSION}</span>
+          </div>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex" aria-label="Navigasi utama">

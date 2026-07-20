@@ -9,13 +9,13 @@ export type ConversionType =
   | "image-to-text"
   | "image-to-pdf"
   | "image-to-doc"
-  | "heic-convert"
+  | "image-to-base64"
   | "svg-convert";
 
 export type ProgressCallback = (percent: number) => void;
 
 export interface ImageConvertOptions {
-  targetFormat: "png" | "jpeg" | "webp";
+  targetFormat: "png" | "jpeg" | "webp" | "gif" | "bmp" | "avif" | "tiff" | "ico" | "tga" | "ppm" | "eps" | "psd" | "svg" | "odd";
   quality?: number;
   width?: number;
   height?: number;

@@ -18,9 +18,9 @@ export default function ImagePage() {
       </div>
 
       <UniversalConverter
-        allowedTypes={["png", "jpeg", "webp", "heic", "svg"]}
-        accept=".png,.jpg,.jpeg,.webp,.heic,.heif,.svg,image/*"
-        dropzoneDescription="PNG, JPG, WebP, HEIC, SVG — maks 50MB"
+        allowedTypes={["png", "jpeg", "webp", "heic", "svg", "gif", "bmp", "tiff", "avif", "ico", "tga", "ppm"]}
+        accept=".png,.jpg,.jpeg,.jfif,.webp,.heic,.heif,.svg,.gif,.bmp,.tiff,.tif,.avif,.ico,.tga,.ppm,image/*"
+        dropzoneDescription="PNG, JPG, WebP, HEIC, SVG, GIF, BMP, TIFF, AVIF, ICO, TGA — maks 50MB"
       />
     </section>
   );

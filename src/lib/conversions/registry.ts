@@ -1,4 +1,5 @@
 import {
+  Code,
   Expand,
   FileOutput,
   FileText,
@@ -31,7 +32,7 @@ function imageConversionOptions(format: string): ConversionOption[] {
       id: "image-convert",
       title: "Ganti Format",
       description: `Konversi ${format} ke format gambar lain`,
-      outputLabel: "PNG / JPG / WebP",
+      outputLabel: "JPG/PNG/WebP/…",
       icon: RefreshCw,
       implemented: true,
     },
@@ -73,6 +74,14 @@ function imageConversionOptions(format: string): ConversionOption[] {
       description: `OCR ${format} ke dokumen Word`,
       outputLabel: ".docx",
       icon: FileText,
+      implemented: true,
+    },
+    {
+      id: "image-to-base64",
+      title: "Gambar ke Base64",
+      description: `Konversi ${format} ke teks Base64`,
+      outputLabel: "Base64",
+      icon: Code,
       implemented: true,
     },
   ];
@@ -121,48 +130,7 @@ export const CONVERSION_REGISTRY: Record<SupportedFileType, ConversionOption[]> 
   png: imageConversionOptions("PNG"),
   jpeg: imageConversionOptions("JPG"),
   webp: imageConversionOptions("WebP"),
-  heic: [
-    {
-      id: "heic-convert",
-      title: "HEIC ke JPG / PNG",
-      description: "Konversi foto iPhone ke format universal",
-      outputLabel: "JPG / PNG",
-      icon: ImageIcon,
-      implemented: true,
-    },
-    {
-      id: "image-resize",
-      title: "Resize Gambar",
-      description: "Ubah dimensi sesuai kebutuhan",
-      outputLabel: "Px kustom",
-      icon: Expand,
-      implemented: false,
-    },
-    {
-      id: "image-compress",
-      title: "Kompres Gambar",
-      description: "Perkecil ukuran file tanpa kehilangan kualitas berarti",
-      outputLabel: "Ukuran lebih kecil",
-      icon: Minimize2,
-      implemented: false,
-    },
-    {
-      id: "image-to-pdf",
-      title: "HEIC ke PDF",
-      description: "Konversi HEIC ke dokumen PDF",
-      outputLabel: ".pdf",
-      icon: FileOutput,
-      implemented: false,
-    },
-    {
-      id: "image-to-text",
-      title: "HEIC ke Teks",
-      description: "Ekstrak teks dari HEIC dengan OCR",
-      outputLabel: ".txt",
-      icon: FileText,
-      implemented: true,
-    },
-  ],
+  heic: imageConversionOptions("HEIC"),
   svg: [
     {
       id: "svg-convert",
@@ -196,7 +164,22 @@ export const CONVERSION_REGISTRY: Record<SupportedFileType, ConversionOption[]> 
       icon: FileText,
       implemented: true,
     },
+    {
+      id: "image-to-base64",
+      title: "SVG ke Base64",
+      description: "Konversi SVG ke teks Base64",
+      outputLabel: "Base64",
+      icon: Code,
+      implemented: true,
+    },
   ],
+  gif: imageConversionOptions("GIF"),
+  bmp: imageConversionOptions("BMP"),
+  tiff: imageConversionOptions("TIFF"),
+  avif: imageConversionOptions("AVIF"),
+  ico: imageConversionOptions("ICO"),
+  tga: imageConversionOptions("TGA"),
+  ppm: imageConversionOptions("PPM"),
 };
 
 export function getConversionOptions(fileType: SupportedFileType): ConversionOption[] {

@@ -24,7 +24,7 @@ export default function KonversiPage() {
       <UniversalConverter
         allowedTypes={ALL_FILE_TYPES}
         accept={ACCEPT_ALL}
-        dropzoneDescription="PDF, PNG, JPG, WebP, HEIC, SVG • Maks 50MB"
+        dropzoneDescription="PDF, PNG, JPG, WebP, HEIC, SVG, GIF, BMP, TIFF, AVIF, ICO, TGA • Maks 50MB"
       />
 
       <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">

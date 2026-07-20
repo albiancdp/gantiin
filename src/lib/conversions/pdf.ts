@@ -8,24 +8,35 @@ let pdfjsPromise: Promise<PdfjsModule> | null = null;
 
 /**
  * Lazy-load pdf.js (hanya saat dibutuhkan) + konfigurasi worker.
+ * Reset promise jika gagal agar bisa dicoba ulang.
  */
 function loadPdfjs(): Promise<PdfjsModule> {
   if (!pdfjsPromise) {
-    pdfjsPromise = import("pdfjs-dist").then((pdfjs) => {
-      pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-        "pdfjs-dist/build/pdf.worker.min.mjs",
-        import.meta.url,
-      ).toString();
-      return pdfjs;
-    });
+    pdfjsPromise = import("pdfjs-dist")
+      .then((pdfjs) => {
+        pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+          "pdfjs-dist/build/pdf.worker.min.mjs",
+          import.meta.url,
+        ).toString();
+        return pdfjs;
+      })
+      .catch((err) => {
+        pdfjsPromise = null;
+        throw err;
+      });
   }
   return pdfjsPromise;
 }
 
 async function openPdf(file: File) {
-  const pdfjs = await loadPdfjs();
+  let pdfjs: PdfjsModule;
+  try {
+    pdfjs = await loadPdfjs();
+  } catch {
+    throw new AppError("CONVERSION_FAILED", "Gagal memuat library PDF");
+  }
+
   const data = await file.arrayBuffer();
-  // Di-copy dari node_modules ke public/ oleh scripts/copy-pdf-assets.mjs (postinstall)
   const loadingTask = pdfjs.getDocument({
     data,
     standardFontDataUrl: "/pdfjs/standard_fonts/",
@@ -34,10 +45,19 @@ async function openPdf(file: File) {
     const doc = await loadingTask.promise;
     return { doc, loadingTask };
   } catch (error) {
-    if (error instanceof Error && error.name === "PasswordException") {
-      throw new AppError("PDF_ENCRYPTED");
+    if (error instanceof Error) {
+      if (error.name === "PasswordException") {
+        throw new AppError("PDF_ENCRYPTED");
+      }
+      const msg = error.message ?? "";
+      if (/invalid|corrupt|broken/i.test(msg)) {
+        throw new AppError("PDF_CORRUPT");
+      }
+      if (/version|format|missing|unsupported|unknown\s+option/i.test(msg)) {
+        throw new AppError("PDF_UNSUPPORTED");
+      }
     }
-    throw new AppError("PDF_CORRUPT");
+    throw new AppError("PDF_UNSUPPORTED");
   }
 }
 
@@ -108,6 +128,10 @@ export async function extractTextFromPdf(
  * Render halaman pertama PDF sebagai thumbnail (data URL).
  * Mengembalikan null jika gagal (mis. PDF terenkripsi) agar UI bisa fallback.
  */
+/**
+ * Render halaman pertama PDF sebagai thumbnail (data URL).
+ * Return `null` jika gagal agar UI bisa fallback ke icon generic.
+ */
 export async function renderPdfThumbnail(
   file: File,
   maxWidth = 480,
@@ -137,8 +161,12 @@ export async function renderPdfThumbnail(
 }
 
 async function loadPdfLib() {
-  const mod = await import("@cantoo/pdf-lib");
-  return mod.PDFDocument;
+  try {
+    const mod = await import("@cantoo/pdf-lib");
+    return mod.PDFDocument;
+  } catch {
+    throw new AppError("CONVERSION_FAILED", "Gagal memuat library PDF");
+  }
 }
 
 /**
@@ -155,7 +183,16 @@ export async function mergePdfs(
 
   for (let i = 0; i < files.length; i++) {
     const fileBytes = await files[i].arrayBuffer();
-    const srcDoc = await PDFDocument.load(fileBytes);
+    let srcDoc;
+    try {
+      srcDoc = await PDFDocument.load(fileBytes);
+    } catch (error) {
+      const name = files[i].name;
+      if (error instanceof Error && /encrypt|password/i.test(error.message ?? "")) {
+        throw new AppError("PDF_ENCRYPTED", `${name} terproteksi password`);
+      }
+      throw new AppError("PDF_CORRUPT", `${name} rusak atau tidak valid`);
+    }
     const pages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
     for (const page of pages) {
       mergedPdf.addPage(page);
@@ -192,7 +229,15 @@ export async function splitPdf(
   onProgress?.(10);
 
   const fileBytes = await file.arrayBuffer();
-  const srcDoc = await PDFDocument.load(fileBytes);
+  let srcDoc;
+  try {
+    srcDoc = await PDFDocument.load(fileBytes);
+  } catch (error) {
+    if (error instanceof Error && /encrypt|password/i.test(error.message ?? "")) {
+      throw new AppError("PDF_ENCRYPTED");
+    }
+    throw new AppError("PDF_CORRUPT");
+  }
   onProgress?.(30);
 
   const indices = pageRange
@@ -273,7 +318,10 @@ export async function convertPdfToImage(
     for (let idx = 0; idx < pagesToRender.length; idx++) {
       const pageNum = pagesToRender[idx];
       const page = await doc.getPage(pageNum);
-      const viewport = page.getViewport({ scale: 1.5 });
+      const baseViewport = page.getViewport({ scale: 1 });
+      const maxDim = Math.max(baseViewport.width, baseViewport.height);
+      const scale = Math.min(1.5, 4096 / maxDim);
+      const viewport = page.getViewport({ scale });
 
       const canvas = document.createElement("canvas");
       canvas.width = Math.floor(viewport.width);

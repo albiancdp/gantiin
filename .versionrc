@@ -1,0 +1,12 @@
+{
+  "types": [
+    { "type": "feat", "section": "🚀 Fitur Baru" },
+    { "type": "fix", "section": "🐛 Perbaikan Bug" },
+    { "type": "perf", "section": "⚡ Performa" },
+    { "type": "docs", "section": "📝 Dokumentasi" },
+    { "type": "style", "section": "🎨 Gaya Kode" },
+    { "type": "refactor", "section": "♻️ Refaktor" },
+    { "type": "test", "section": "✅ Testing" },
+    { "type": "chore", "section": "🔧 Chore" }
+  ]
+}

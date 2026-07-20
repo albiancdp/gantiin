@@ -3,6 +3,7 @@ export type AppErrorCode =
   | "UNSUPPORTED_TYPE"
   | "PDF_ENCRYPTED"
   | "PDF_CORRUPT"
+  | "PDF_UNSUPPORTED"
   | "CONVERSION_FAILED"
   | "UNKNOWN";
 
@@ -11,6 +12,7 @@ export const ERROR_MESSAGES: Record<AppErrorCode, string> = {
   UNSUPPORTED_TYPE: "Format file tidak didukung",
   PDF_ENCRYPTED: "PDF terproteksi password tidak bisa dikonversi",
   PDF_CORRUPT: "File PDF rusak atau tidak valid",
+  PDF_UNSUPPORTED: "Format PDF ini belum didukung. Coba gunakan PDF versi lain",
   CONVERSION_FAILED: "Gagal mengkonversi file. Coba lagi atau gunakan file lain",
   UNKNOWN: "Terjadi kesalahan tak terduga. Coba lagi",
 };

@@ -13,13 +13,15 @@ Konverter file online, gratis, 100% client-side untuk Indonesia.
 - **Next.js 16** (static export, `output: 'export'`) + React 19 + TypeScript strict
 - **Tailwind CSS v4** (CSS-first config, no `tailwind.config.js`)
 - **shadcn/ui (Base UI)** — komposisi via `render={<Link/>}`, bukan `asChild`. Saat Button jadi link, tambah `nativeButton={false}`.
-- **pdfjs-dist 6** — lazy load (`new URL(..., import.meta.url)` worker). Cleanup via `loadingTask.destroy()` (bukan `doc.destroy()`).
+- **pdfjs-dist 6** — lazy load (`new URL(..., import.meta.url)` worker). Cleanup via `loadingTask.destroy()` (bukan `doc.destroy()`). Error dibedain: encrypted / corrupt / unsupported.
+- **Vitest + happy-dom** — unit test infra. 23 tests covering decoder, encoder, round-trip, detectFileType, registry. `npm run test`.
 - **@cantoo/pdf-lib** — PDF manipulation (merge/split)
 - **Tesseract.js 7** — OCR (WASM, lazy load, `ind+eng`)
 - **docx** — DOCX generation (Gambar→DOC)
 - **JSZip** — ZIP output (PDF→Gambar multi-file)
-- **heic-to** — HEIC→JPG (WASM lazy load)
+- **heic-to** — HEIC→JPG/PNG/... (WASM lazy load)
 - **Canvas API + @jsquash/webp** — image conversion (fallback WebP if native unavailable)
+- **@jsquash/avif** — AVIF encoder WASM
 - **Umami self-hosted** — analytics (umami.alltech.web.id)
 
 ## Key Conventions
@@ -40,6 +42,9 @@ Konverter file online, gratis, 100% client-side untuk Indonesia.
 | Tailwind v4: CSS-first, no `tailwind.config.js` | Use `@theme` in CSS file |
 | Tesseract.js v7: word data via `blocks: true` | `data.words` tidak ada di top-level; pakai `data.blocks[].paragraphs[].lines[].words[]` |
 | docx library: `Paragraph` dan `TextRun` class | `children: ParagraphChild[]` — `TextRun`, `ImageRun` |
+| HEIC input via `image-convert` (bukan `heic-convert`) | `resolveImageData()` handle HEIC via heic-to → loadBlobAsImage |
+| TGA/PPM input tidak bisa via `<img>` tag | `resolveImageData()` pakai `decodeTGA()` / `decodePPM()` custom decoder |
+| PPM decoder routing | Pakai `header === "P6"` / `"P5"`, bukan `channels === 3` (P3 juga 3 channel!) |
 
 ## Halaman Live
 
@@ -63,6 +68,7 @@ Konverter file online, gratis, 100% client-side untuk Indonesia.
 | S4 | PDF merge/split (@cantoo/pdf-lib), Umami analytics, .env.example, /merge page |
 | S6 | Halaman /dukung, sponsor section, navigasi donasi |
 | Post-MVP | Gambar→DOC (OCR→DOCX dengan layout preservation), Gambar→Teks (OCR), Gambar→PDF, PDF→Gambar (ZIP), Split PDF (range halaman), Trakteer donation, docs update, Git SSH |
+| S7 | PPM support (full), TGA input decoder, HEIF brand, JFIF extension, HEIC as full image source, resolveImageData() refactor, PDF error handling overhaul, Vitest infra + 23 tests, conversion-catalog.md |
 
 ## Open Issues
 

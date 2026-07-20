@@ -29,12 +29,12 @@ export function ImageConfig({ option, onConvert, onBack }: ImageConfigProps) {
 
   const needsFormat = useMemo(
     () =>
-      ["image-convert", "heic-convert", "svg-convert", "image-resize", "pdf-to-image"].includes(option.id),
+      ["image-convert", "svg-convert", "image-resize", "pdf-to-image"].includes(option.id),
     [option.id],
   );
 
   const needsQuality = useMemo(
-    () => ["image-convert", "image-compress", "image-resize", "heic-convert"].includes(option.id),
+    () => ["image-convert", "image-compress", "image-resize"].includes(option.id),
     [option.id],
   );
 
@@ -42,7 +42,7 @@ export function ImageConfig({ option, onConvert, onBack }: ImageConfigProps) {
   const needsPageRange = option.id === "pdf-to-image" || option.id === "pdf-split";
 
   const formatOptions = useMemo(() => {
-    if (option.id === "heic-convert" || option.id === "pdf-to-image") {
+    if (option.id === "pdf-to-image") {
       return [
         { value: "jpeg", label: "JPG" },
         { value: "png", label: "PNG" },
@@ -52,6 +52,16 @@ export function ImageConfig({ option, onConvert, onBack }: ImageConfigProps) {
       { value: "jpeg", label: "JPG" },
       { value: "png", label: "PNG" },
       { value: "webp", label: "WebP" },
+      { value: "gif", label: "GIF" },
+      { value: "bmp", label: "BMP" },
+      { value: "tiff", label: "TIFF" },
+      { value: "ico", label: "ICO" },
+      { value: "tga", label: "TGA" },
+      { value: "avif", label: "AVIF" },
+      { value: "ppm", label: "PPM" },
+      { value: "eps", label: "EPS" },
+      { value: "psd", label: "PSD" },
+      { value: "odd", label: "ODD" },
     ];
   }, [option.id]);
 
@@ -66,14 +76,9 @@ export function ImageConfig({ option, onConvert, onBack }: ImageConfigProps) {
       pageRange: needsPageRange ? pageRange : undefined,
     };
 
-    let type: ConversionType;
-    if (option.id.startsWith("heic")) {
-      type = "heic-convert";
-    } else if (option.id.startsWith("svg")) {
-      type = "svg-convert";
-    } else {
-      type = option.id as ConversionType;
-    }
+    const type: ConversionType =
+      option.id.startsWith("svg") ? "svg-convert" :
+      option.id as ConversionType;
 
     onConvert(type, options);
   };

@@ -60,14 +60,15 @@ export function UniversalConverter({
       return;
     }
 
+    if (option.id === "pdf-to-text" || option.id === "image-to-base64") {
+      void conversion.convert(file, option.id as ConversionType);
+      return;
+    }
+
     if (option.implemented && (option.id.startsWith("image-") || option.id === "pdf-to-image" || option.id === "pdf-split")) {
       setSelectedOption(option);
       setPhase("config");
       return;
-    }
-
-    if (option.id === "pdf-to-text") {
-      void conversion.convert(file, option.id as ConversionType);
     }
   };
 

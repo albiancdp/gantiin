@@ -6,9 +6,9 @@ import {
   convertSVG,
   resizeImage,
   compressImage,
-  convertHeic,
   convertImageToPdf,
   convertImageToDoc,
+  convertImageToBase64,
   extractTextFromImage,
 } from "@/lib/conversions/image";
 import type {
@@ -61,25 +61,24 @@ export async function convertFile(
       return resizeImage(file, options, onProgress);
     case "image-compress":
       return compressImage(file, options?.quality ?? 0.8, onProgress);
-    case "heic-convert":
-      if (!options?.targetFormat) throw new AppError("CONVERSION_FAILED", "Pilih format target terlebih dahulu");
-      return convertHeic(file, options, onProgress);
     case "svg-convert":
       if (!options?.targetFormat) throw new AppError("CONVERSION_FAILED", "Pilih format target terlebih dahulu");
       return convertSVG(file, options, onProgress);
     case "pdf-split":
       return splitPdf(file, options?.pageRange, onProgress);
     case "pdf-to-image":
-      if (!options?.targetFormat || options.targetFormat === "webp") {
+      if (!options?.targetFormat || !["png", "jpeg"].includes(options.targetFormat)) {
         throw new AppError("CONVERSION_FAILED", "Pilih format PNG atau JPG");
       }
-      return convertPdfToImage(file, options.targetFormat, options.pageRange, onProgress);
+      return convertPdfToImage(file, options.targetFormat as "png" | "jpeg", options.pageRange, onProgress);
     case "image-to-pdf":
       return convertImageToPdf(file, onProgress);
     case "image-to-text":
       return extractTextFromImage(file, onProgress);
     case "image-to-doc":
       return convertImageToDoc(file, onProgress);
+    case "image-to-base64":
+      return convertImageToBase64(file, onProgress);
     default:
       throw new AppError("UNSUPPORTED_TYPE");
   }

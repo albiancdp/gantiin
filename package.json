@@ -1,17 +1,24 @@
 {
   "name": "convertkan",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/update-version.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/update-version.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "node scripts/copy-pdf-assets.mjs"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "postinstall": "node scripts/copy-pdf-assets.mjs",
+    "release": "commit-and-tag-version",
+    "postrelease": "node scripts/update-version.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@cantoo/pdf-lib": "^2.7.4",
+    "@jsquash/avif": "^2.1.1",
     "@jsquash/webp": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -35,9 +42,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/ui": "^4.1.10",
+    "commit-and-tag-version": "^13.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "happy-dom": "^20.11.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }
