@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.6](https://github.com/albiancdp/gantiin/compare/v1.0.5...v1.0.6) (2026-07-21)
+
+### 🐛 Perbaikan Bug
+
+* **nginx:** serve .mjs as application/javascript for pdf.js module worker ([c373f8e](https://github.com/albiancdp/gantiin/commit/c373f8eac76eda4faa0e4365326af21da6b05031))
 ## [1.0.5](https://github.com/albiancdp/gantiin/compare/v1.0.4...v1.0.5) (2026-07-21)
 
 ### 🔧 Chore
