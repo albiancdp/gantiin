@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.4](https://github.com/albiancdp/gantiin/compare/v1.0.3...v1.0.4) (2026-07-21)
+
+### 🐛 Perbaikan Bug
+
+* **pdf:** use legacy build for pdfjs-dist v6 worker compatibility ([d7e383f](https://github.com/albiancdp/gantiin/commit/d7e383fa689207e825507e7514b32771c5d77459))
 ## [1.0.3](https://github.com/albiancdp/gantiin/compare/v1.0.2...v1.0.3) (2026-07-20)
 
 ### 🔧 Chore
