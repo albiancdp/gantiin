@@ -45,6 +45,7 @@ Konverter file online, gratis, 100% client-side untuk Indonesia.
 | HEIC input via `image-convert` (bukan `heic-convert`) | `resolveImageData()` handle HEIC via heic-to → loadBlobAsImage |
 | TGA/PPM input tidak bisa via `<img>` tag | `resolveImageData()` pakai `decodeTGA()` / `decodePPM()` custom decoder |
 | PPM decoder routing | Pakai `header === "P6"` / `"P5"`, bukan `channels === 3` (P3 juga 3 channel!) |
+| nginx tidak kenal `.mjs` (default octet-stream) | Browser tolak module worker pdf.js → error "PDF belum didukung". Fix: location block `.mjs` dengan `default_type application/javascript` di nginx.conf |
 
 ## Halaman Live
 
