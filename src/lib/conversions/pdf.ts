@@ -2,7 +2,7 @@ import { AppError } from "@/lib/errors";
 import JSZip from "jszip";
 import type { ConversionResultData, ProgressCallback } from "@/lib/conversions/types";
 
-type PdfjsModule = typeof import("pdfjs-dist");
+type PdfjsModule = typeof import("pdfjs-dist/legacy/build/pdf.mjs");
 
 let pdfjsPromise: Promise<PdfjsModule> | null = null;
 
@@ -12,10 +12,10 @@ let pdfjsPromise: Promise<PdfjsModule> | null = null;
  */
 function loadPdfjs(): Promise<PdfjsModule> {
   if (!pdfjsPromise) {
-    pdfjsPromise = import("pdfjs-dist")
+    pdfjsPromise = import("pdfjs-dist/legacy/build/pdf.mjs")
       .then((pdfjs) => {
         pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-          "pdfjs-dist/build/pdf.worker.min.mjs",
+          "pdfjs-dist/legacy/build/pdf.worker.min.mjs",
           import.meta.url,
         ).toString();
         return pdfjs;
