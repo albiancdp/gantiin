@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.5](https://github.com/albiancdp/gantiin/compare/v1.0.4...v1.0.5) (2026-07-21)
+
+### 🔧 Chore
+
+* add error folder to .gitignore ([555827e](https://github.com/albiancdp/gantiin/commit/555827e789e38344a047abcf77d2efc67c13ab80))
 ## [1.0.4](https://github.com/albiancdp/gantiin/compare/v1.0.3...v1.0.4) (2026-07-21)
 
 ### 🐛 Perbaikan Bug
